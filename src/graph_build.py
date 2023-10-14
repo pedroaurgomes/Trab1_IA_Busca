@@ -24,7 +24,6 @@ def parseCsv(filename):
             content.append(data)
     return content
 
-
 def buildGraph():
     movie_cast = {} # movie_id -> actors_id of the movie
     actors = {} # actor_id -> actor object
@@ -32,15 +31,13 @@ def buildGraph():
     current_directory = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the currently executing script
     parent_directory = os.path.dirname(current_directory)
 
-    actor_data_csv_filepath = os.path.join(parent_directory, "Data", "data_name.csv")  # Constructs the path
-    movie_data_csv_filepath = os.path.join(parent_directory, "Data", "data_title.csv")  # Constructs the path
+    actor_data_csv_filepath = os.path.join(parent_directory, "Data", "compressed_actors_dataset.csv")  # Constructs the path
+    movie_data_csv_filepath = os.path.join(parent_directory, "Data", "compressed_movies_dataset.csv")  # Constructs the path
 
+    actors_data = parseCsv(actor_data_csv_filepath)
+    movies_data = parseCsv(movie_data_csv_filepath)
 
-    actor_data = parseCsv(actor_data_csv_filepath)
-    movie_data = parseCsv(movie_data_csv_filepath)
-
-    print(actor_data[0])
-    for actor_row in actor_data:
+    for actor_row in actors_data:
         actor = Actor(actor_row["nconst"], actor_row["primaryName"])
         actors[actor.actor_id] = actor
         for title in actor_row["knownForTitles"]:
