@@ -1,6 +1,11 @@
 
 import csv
 import os
+import random
+import json
+
+from a_star import aStar
+from bfs import bfs
 
 class Actor():
     """"A node in the graph """
@@ -9,10 +14,10 @@ class Actor():
         self.name = name
         self.neighbors = set() # lista de actor_id, teremos um dicionário: id=>objeto actor
         self.genres = set()
+        self.movies = set()
 
 
 def parseCsv(filename):
-    print("Tamo na parse")
     content = []
     with open(filename, newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',', quotechar='"')
@@ -28,6 +33,7 @@ def buildGraph():
     movie_cast = {} # movie_id -> actors_id of the movie
     actors = {} # actor_id -> actor object
     movie_genres = {} # movie_id -> genres of the movie
+    movie_names = {} # movie_id -> movie name
 
     current_directory = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the currently executing script
     parent_directory = os.path.dirname(current_directory)
@@ -40,6 +46,7 @@ def buildGraph():
 
     for movie in movies_data:
         movie_id = movie['tconst']
+        movie_names[movie_id] = movie['primaryTitle']
         movie_genres[movie_id] = movie['genres'].split(',')
 
     for actor_row in actors_data:
@@ -49,10 +56,12 @@ def buildGraph():
             continue
         actor_row["knownForTitles"] = actor_row["knownForTitles"].split(',')
         for title in actor_row["knownForTitles"]:
-            print(title)
+            if title not in movie_names:
+                continue
+            
+            actor.movies.add(movie_names[title])
             movie_cast.setdefault(title, []).append(actor.actor_id)
-            if title in movie_genres:
-                actor.genres.update(movie_genres[title])
+            actor.genres.update(movie_genres[title])
 
     for movie_name, cast in movie_cast.items():
         # Add edges between all pairs of actors in this movie
@@ -63,14 +72,41 @@ def buildGraph():
 
     return actors
 
+def runExperiments(actors, n):
+
+    exp = 1
+    results = []
+
+    while(exp < n):
+
+        # get a random source and target
+        source_id = random.choice(list(actors.keys()))
+        target_id = random.choice(list(actors.keys()))
+
+        # run and print the results
+        print("Experiment ", exp, ":")
+        print("Source: ", actors[source_id].name)
+        print("Target: ", actors[target_id].name)
+        print("BFS results:")
+        print(bfs(actors, source_id, target_id))
+        print("A* results:")
+        print(aStar(actors, source_id, target_id))
+        print("\n")
+
+        results.append({
+            'source': actors[source_id].name,
+            'target': actors[target_id].name,
+            'bfs': bfs(actors, source_id, target_id),
+            'a_star': aStar(actors, source_id, target_id)
+        })
+
+        exp += 1
+
+    # write results to a json file
+    with open('results.json', 'w') as outfile:
+        json.dump(results, outfile)
+
+
 
 actors = buildGraph()
-# print actors
-for key, actor in actors.items():
-    print(actor.name, actor.actor_id, actor.genres, actor.neighbors)
-
-# def main():
-#     pass
-#
-# if __name__ == "__main__":
-#     main()
+runExperiments(actors, 100)
