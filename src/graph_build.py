@@ -1,11 +1,13 @@
-
 import csv
 import os
 import random
 import json
+import matplotlib.pyplot as plt
 
 from a_star import aStar
 from bfs import bfs
+from utils import printPath
+from analysis import experimentAnalysis, graphAnalysis
 
 class Actor():
     """"A node in the graph """
@@ -38,8 +40,8 @@ def buildGraph():
     current_directory = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the currently executing script
     parent_directory = os.path.dirname(current_directory)
 
-    actor_data_csv_filepath = os.path.join(parent_directory, "Data", "compressed_actors_dataset.csv")  # Constructs the path
-    movie_data_csv_filepath = os.path.join(parent_directory, "Data", "compressed_movies_dataset.csv")  # Constructs the path
+    actor_data_csv_filepath = os.path.join(parent_directory, "Data", "data_actors_final.csv")  # Constructs the path
+    movie_data_csv_filepath = os.path.join(parent_directory, "Data", "data_movies_final.csv")  # Constructs the path
 
     actors_data = parseCsv(actor_data_csv_filepath)
     movies_data = parseCsv(movie_data_csv_filepath)
@@ -77,7 +79,7 @@ def runExperiments(actors, n):
     exp = 1
     results = []
 
-    while(exp < n):
+    while(exp <= n):
 
         # get a random source and target
         source_id = random.choice(list(actors.keys()))
@@ -88,10 +90,14 @@ def runExperiments(actors, n):
         print("Source: ", actors[source_id].name)
         print("Target: ", actors[target_id].name)
         print("BFS results:")
-        print(bfs(actors, source_id, target_id))
+        bfsResult = bfs(actors, source_id, target_id)
+        printPath(bfsResult)
         print("A* results:")
-        print(aStar(actors, source_id, target_id))
+        aStarResult = aStar(actors, source_id, target_id)
+        printPath(aStarResult)
         print("\n")
+
+        
 
         results.append({
             'source': actors[source_id].name,
@@ -109,4 +115,6 @@ def runExperiments(actors, n):
 
 
 actors = buildGraph()
-runExperiments(actors, 100)
+#runExperiments(actors, 1)
+graphAnalysis(actors)
+#experimentAnalysis()
