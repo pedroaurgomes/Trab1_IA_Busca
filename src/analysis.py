@@ -29,24 +29,25 @@ def graphAnalysis(graph):
         for neighbor in graph[key].neighbors:
             G.add_edge(key, neighbor)
 
-    # plt.plot(degree_sequence, "b-", marker="o")
-    # plt.title("Degree Rank Plot")
-    # plt.ylabel("Degree")
-    # plt.xlabel("Rank")
-    # plt.savefig('../figures/graph_degree_rank.png', dpi=300, bbox_inches='tight')
+    plt.plot(degree_sequence, "b-", marker="o") #rank node degree in descending order
+    plt.title("Degree Rank Plot")
+    plt.ylabel("Degree")
+    plt.xlabel("Rank")
+    plt.savefig('../figures/graph_degree_rank.png', dpi=300, bbox_inches='tight')
 
-    centrality = nx.degree_centrality(G)
-    firstNCentrality = list(centrality.items())[:2000]
+    centrality = nx.degree_centrality(G)   #check centrality of random 100 actors
+    firstNCentrality = list(centrality.items())[:100]
     actorsName = []
     actorsCentrality = []
     for key in firstNCentrality:
         actorsName.append(graph[key[0]].name)
         actorsCentrality.append(key[1])
     plt.bar(actorsName, actorsCentrality)
-    plt.title('Actors Centrality')
+    plt.title('100 Actors Centrality')
     plt.xlabel('Actor')
+    plt.xticks(range(len(actorsName)), actorsName, rotation='vertical', fontsize=5)
     plt.ylabel('Centrality')
-    plt.savefig('../figures/actors_centrality.png', dpi=300, bbox_inches='tight')
+    plt.savefig('../figures/100_actors_centrality.png', dpi=300, bbox_inches='tight')
     
     
 def experimentAnalysis():

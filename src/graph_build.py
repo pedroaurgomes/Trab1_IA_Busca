@@ -115,6 +115,6 @@ def runExperiments(actors, n):
 
 
 actors = buildGraph()
-#runExperiments(actors, 1)
+runExperiments(actors, 100)
 graphAnalysis(actors)
-#experimentAnalysis()
+experimentAnalysis()

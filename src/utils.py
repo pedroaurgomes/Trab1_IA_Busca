@@ -27,6 +27,7 @@ def printPath(path = None):
   pathArray = path['path']
 
   print("Cost: ", path['cost'])
+  print("Steps: ", path['steps'])
 
   print("*-----------------------------------*")
   
