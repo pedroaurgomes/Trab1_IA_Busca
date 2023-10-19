@@ -4,11 +4,6 @@ import networkx as nx
 from scipy import *
 
 
-filename = 'results.json'
-with open(filename, 'r') as f:
-    experiments = json.load(f)
-
-
 minPathSizes = []
 
 foundMap = {
@@ -51,6 +46,9 @@ def graphAnalysis(graph):
     
     
 def experimentAnalysis():
+    filename = 'results.json'
+    with open(filename, 'r') as f:
+        experiments = json.load(f)
 
     for src in experiments:
         if src['bfs']['cost'] != -1:
