@@ -10,7 +10,19 @@ from utils import printPath
 from analysis import experimentAnalysis, graphAnalysis
 
 class Actor():
-    """"A node in the graph """
+    """
+    Represents a node in a graph for an actor.
+
+    Attributes:
+    - actor_id (int/str): A unique identifier for the actor.
+    - name (str): The name of the actor.
+    - neighbors (set): A set of actor_ids representing other actors who have co-starred 
+                       in a movie with this actor. It helps in representing the graph edges.
+    - genres (set): A set of genres representing the different types of movies the actor 
+                    has participated in.
+    - movies (set): A set of movie IDs representing the movies in which the actor 
+                    has participated.
+    """
     def __init__(self,actor_id,name):
         self.actor_id = actor_id
         self.name = name
@@ -46,16 +58,20 @@ def buildGraph():
     actors_data = parseCsv(actor_data_csv_filepath)
     movies_data = parseCsv(movie_data_csv_filepath)
 
+    # Build a dictionary of movie names and genres
     for movie in movies_data:
         movie_id = movie['tconst']
         movie_names[movie_id] = movie['primaryTitle']
         movie_genres[movie_id] = movie['genres'].split(',')
 
+    # Build the nodes and the actors dictionary
     for actor_row in actors_data:
         actor = Actor(actor_row["nconst"], actor_row["primaryName"])
         actors[actor.actor_id] = actor
+        
         if actor_row["knownForTitles"] == '\\N':
             continue
+        
         actor_row["knownForTitles"] = actor_row["knownForTitles"].split(',')
         for title in actor_row["knownForTitles"]:
             if title not in movie_names:

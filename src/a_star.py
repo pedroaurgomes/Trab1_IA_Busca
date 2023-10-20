@@ -4,15 +4,14 @@ from utils import getPath
 
 def aStar(actors, source, target):
 
-    # create priority queue that sorts by the highest priority
-    # the priority is the sum of the cost and the heuristic
-
     queue = PriorityQueue()
     queue.put((0, 0, source))
     steps = 0
 
     visited = {}
-    parent = {}
+
+    # dictionary to store the parent of each node, so we can reconstruct the path 
+    parent = {} 
 
     while not queue.empty():
         value, cost, current = queue.get()
@@ -26,8 +25,10 @@ def aStar(actors, source, target):
             }
 
         for neighbor in actors[current].neighbors:
+            
             g = cost + 1
             h = 0 if len(actors[target].genres) == 0 else - len(actors[neighbor].genres.intersection(actors[target].genres))/len(actors[target].genres)
+            
             if visited.get(neighbor) is None or visited[neighbor] > g+h:
                 queue.put((g+h, g, neighbor))
                 visited[neighbor] = g+h

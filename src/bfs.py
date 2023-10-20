@@ -7,6 +7,8 @@ def bfs(actors, source, target):
     visited = set()
 
     queue = Queue()
+
+    # dictionary to store the parent of each node, so we can reconstruct the path
     parent = {}
 
     queue.put((source, 0))
@@ -25,7 +27,7 @@ def bfs(actors, source, target):
                 'cost': cost,
                 'steps': steps
             }
-        # mark actor_id as parent of all it's neighbors and add them to the queue
+
         for neighbor in actors[actor_id].neighbors:
             if parent.get(neighbor) is None:
                 queue.put((neighbor, cost+1))
